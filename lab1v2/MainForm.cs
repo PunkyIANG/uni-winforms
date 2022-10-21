@@ -90,6 +90,10 @@ public partial class MainForm : Form
     {
         InitializeComponent();
 
+        var mainContainer = new Panel {
+            Dock = DockStyle.Fill,
+        };
+
         #region col1
         modelData = new BindingList<GraphicsCard>(GraphicsCard.GenerateGraphicsCards(10).ToList());
         selectedGpu = modelData.First();
@@ -128,7 +132,7 @@ public partial class MainForm : Form
 
 
 
-        Controls.Add(listView);
+        mainContainer.Controls.Add(listView);
 
         //
 
@@ -139,7 +143,7 @@ public partial class MainForm : Form
             PlaceholderText = "File to save/load",
         };
 
-        Controls.Add(saveLoadTextBox);
+        mainContainer.Controls.Add(saveLoadTextBox);
 
         var saveButton = new Button
         {
@@ -151,7 +155,7 @@ public partial class MainForm : Form
 
         saveButton.Click += (sender, e) => SaveGPU();
 
-        Controls.Add(saveButton);
+        mainContainer.Controls.Add(saveButton);
 
         var loadButton = new Button
         {
@@ -163,15 +167,33 @@ public partial class MainForm : Form
 
         loadButton.Click += (sender, e) => LoadGPU();
 
-        Controls.Add(loadButton);
+        mainContainer.Controls.Add(loadButton);
 
         saveLoadResultLabel = new Label
         {
-            Location = new Point(0, 390),
-            Width = 400,
+            // Location = new Point(0, 390),
+            // Width = 400,
+            Dock = DockStyle.Bottom,
         };
 
-        Controls.Add(saveLoadResultLabel);
+        // Controls.Add(saveLoadResultLabel);
+
+        var someSplitter = new Splitter {
+            Dock = DockStyle.Bottom,
+            BorderStyle = BorderStyle.FixedSingle,
+            BackColor = Color.Red,
+            Location = new Point (0, 120),
+            Size = new Size (1, 8),
+            TabIndex = 1,
+            TabStop = false,
+        };
+
+
+        // Controls.Add(someSplitter);
+
+        // Controls.Add(mainContainer);
+
+        Controls.AddRange(new Control[]{mainContainer, someSplitter, saveLoadResultLabel});
 
         #endregion
 
@@ -184,7 +206,7 @@ public partial class MainForm : Form
             BorderStyle = BorderStyle.Fixed3D
         };
 
-        Controls.Add(col2Panel);
+        mainContainer.Controls.Add(col2Panel);
 
         manufacturerDropDown = new ComboBox
         {
@@ -201,6 +223,8 @@ public partial class MainForm : Form
             Width = 120,
             PlaceholderText = "Model",
         };
+
+        modelTextBox.TextChanged += ModelTextBox_TextChanged;
 
         col2Panel.Controls.Add(modelTextBox);
 
@@ -364,7 +388,7 @@ public partial class MainForm : Form
             Text = "Is in active\r\nproduction",
             Height = 50,
         };
-        Controls.Add(productionCheckbox);
+        mainContainer.Controls.Add(productionCheckbox);
 
 
         var showButtonToolTip = new ToolTip();
@@ -376,9 +400,9 @@ public partial class MainForm : Form
         };
         showButton.Click += ShowCurrentValue;
         showButtonToolTip.SetToolTip(showButton, "Show an alert with the json data of this gpu");
-        Controls.Add(showButton);
+        mainContainer.Controls.Add(showButton);
 
-        Controls.Add(memoryGroupBox);
+        mainContainer.Controls.Add(memoryGroupBox);
         #endregion
 
         ResetDataBindings();
@@ -459,6 +483,13 @@ public partial class MainForm : Form
     void TrackBarValueChanged()
     {
         memorySizeLabel.Text = $"Size: {memorySizeTrackBar.Value} GB";
+    }
+
+    void ModelTextBox_TextChanged(object? sender, EventArgs e) {
+        if (listView.SelectedItems.Count != 0)
+            listView.SelectedItems[0].Text = modelTextBox.Text;
+        else
+            Console.WriteLine("WARNING: editing an item without a set index!");
     }
 
     void SaveGPU()
