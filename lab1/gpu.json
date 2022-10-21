@@ -1,0 +1,16 @@
+{
+  "Manufacturer": 0,
+  "Model": "GT 1030",
+  "OutputTypes": [
+    0
+  ],
+  "RecommendedResolutions": 3,
+  "Price": 332.366500,
+  "BaseClock": 1526,
+  "Memory": {
+    "type": 3,
+    "manufacturer": 2,
+    "size": 8
+  },
+  "IsInActiveProduction": true
+}
