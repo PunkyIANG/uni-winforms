@@ -9,6 +9,7 @@ namespace GPUProject.lab1v2;
 // TODO: add, delete, save, load
 public partial class MainForm : Form
 {
+    ListView listView;
     ListBox gpuList;
     TextBox saveLoadTextBox;
     Label saveLoadResultLabel;
@@ -105,8 +106,31 @@ public partial class MainForm : Form
 
         gpuList.SelectedValueChanged += GPUList_SelectedValueChanged;
 
-        Controls.Add(gpuList);
+        // Controls.Add(gpuList);
 
+        listView = new ListView
+        {
+            Height = 330,
+            View = View.SmallIcon,
+            // Width = 120,
+            // Alignment = ListViewAlignment.Top,
+            MultiSelect = false,
+        };
+
+        foreach (var item in modelData)
+        {
+            listView.Items.Add(new ListViewItem(item.Model));
+        }
+
+        listView.ItemSelectionChanged += ListView_SelectedValueChanged;
+        listView.MouseDoubleClick += ListView_MouseDoubleClick;
+        listView.MouseClick += ListView_MouseClick;
+
+
+
+        Controls.Add(listView);
+
+        //
 
         saveLoadTextBox = new TextBox
         {
@@ -152,7 +176,8 @@ public partial class MainForm : Form
         #endregion
 
         #region col2
-        var col2Panel = new Panel {
+        var col2Panel = new Panel
+        {
             Location = new Point(130, 0),
             Width = 130,
             Height = 400,
@@ -277,7 +302,8 @@ public partial class MainForm : Form
 
         #region col3
 
-        var memoryGroupBox = new GroupBox {
+        var memoryGroupBox = new GroupBox
+        {
             Location = new Point(260, 0),
             Width = 140,
             Height = 170,
@@ -317,7 +343,8 @@ public partial class MainForm : Form
         // };
         // memoryGroupBox.Controls.Add(memorySizeNumericUpDown);
 
-        memorySizeTrackBar = new TrackBar {
+        memorySizeTrackBar = new TrackBar
+        {
             Location = new Point(10, 120),
             Size = new Size(130, 45),
             Maximum = 16,
@@ -383,6 +410,42 @@ public partial class MainForm : Form
         ResetDataBindings();
     }
 
+    void ListView_SelectedValueChanged(object? sender, EventArgs e)
+    {
+        if (listView.SelectedIndices.Count != 0)
+            selectedGpu = modelData[listView.SelectedIndices[0]];
+
+        ResetDataBindings();
+    }
+
+    void ListView_MouseDoubleClick(object? sender, MouseEventArgs e)
+    {
+        if (listView.SelectedIndices.Count != 0)
+        {
+            modelData.RemoveAt(listView.SelectedIndices[0]);
+            listView.Items.RemoveAt(listView.SelectedIndices[0]);
+        }
+
+        if (modelData.Count == 0)
+        {
+            modelData.Add(new GraphicsCard());
+            listView.Items.Add(modelData[0].Model);
+            selectedGpu = modelData[0];
+        }
+
+
+        ResetDataBindings();
+    }
+
+    void ListView_MouseClick(object? sender, MouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Right) {
+            var item = modelData.AddNew();
+            listView.Items.Add(item.Model);
+        }
+    }
+
+
     void ShowCurrentValue(object? sender, EventArgs e)
     {
         MessageBox.Show(JsonSerializer.Serialize<GraphicsCard>(selectedGpu));
@@ -393,7 +456,8 @@ public partial class MainForm : Form
         selectedGpu.OutputTypes.Add(outputType);
     }
 
-    void TrackBarValueChanged() {
+    void TrackBarValueChanged()
+    {
         memorySizeLabel.Text = $"Size: {memorySizeTrackBar.Value} GB";
     }
 
@@ -419,7 +483,10 @@ public partial class MainForm : Form
         if (GraphicsCard.TryReadGPU(saveLoadTextBox.Text, out var newGPU))
         {
             modelData.Add(newGPU);
+            listView.Items.Add(newGPU.Model);
+
             gpuList.SelectedIndex = gpuList.Items.Count - 1;
+            
             selectedGpu = modelData.Last();
             ResetDataBindings();
             saveLoadResultLabel.Text = $"Successfully loaded {saveLoadTextBox.Text}";
