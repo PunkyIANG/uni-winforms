@@ -23,7 +23,8 @@ public partial class MainForm : Form
     NumericUpDown priceNumericUpDown;
     NumericUpDown baseClockNumericUpDown;
     ComboBox memoryTypeDropDown;
-    ComboBox memoryManufacturerDropDown;
+    // ComboBox memoryManufacturerDropDown;
+    RadioButton[] radioButtons;
     // NumericUpDown memorySizeNumericUpDown;
     Label memorySizeLabel;
     TrackBar memorySizeTrackBar;
@@ -31,6 +32,15 @@ public partial class MainForm : Form
 
     BindingList<GraphicsCard> modelData;
     GraphicsCard selectedGpu;
+    int timerTicks;
+
+    readonly MemoryManufacturer[] memValues =
+    {
+        MemoryManufacturer.SKHynix,
+        MemoryManufacturer.Micron,
+        MemoryManufacturer.Samsung
+    };
+
 
     #region memory middleman
     public MemoryManufacturer memoryManufacturer
@@ -90,7 +100,8 @@ public partial class MainForm : Form
     {
         InitializeComponent();
 
-        var mainContainer = new Panel {
+        var mainContainer = new Panel
+        {
             Dock = DockStyle.Fill,
         };
 
@@ -112,9 +123,18 @@ public partial class MainForm : Form
 
         // Controls.Add(gpuList);
 
+        var listViewLabel = new Label
+        {
+            Location = new Point(10, 0),
+            Text = "List of GPUs",
+        };
+        mainContainer.Controls.Add(listViewLabel);
+
         listView = new ListView
         {
-            Height = 330,
+            Location = new Point(10, 25),
+            Height = 305,
+            Width = 110,
             View = View.SmallIcon,
             // Width = 120,
             // Alignment = ListViewAlignment.Top,
@@ -138,8 +158,8 @@ public partial class MainForm : Form
 
         saveLoadTextBox = new TextBox
         {
-            Location = new Point(0, 330),
-            Width = 120,
+            Location = new Point(10, 330),
+            Width = 110,
             PlaceholderText = "File to save/load",
         };
 
@@ -147,8 +167,8 @@ public partial class MainForm : Form
 
         var saveButton = new Button
         {
-            Location = new Point(0, 360),
-            Width = 60,
+            Location = new Point(10, 360),
+            Width = 55,
             Height = 30,
             Text = "Save",
         };
@@ -159,8 +179,8 @@ public partial class MainForm : Form
 
         var loadButton = new Button
         {
-            Location = new Point(60, 360),
-            Width = 60,
+            Location = new Point(65, 360),
+            Width = 55,
             Height = 30,
             Text = "Load",
         };
@@ -178,12 +198,13 @@ public partial class MainForm : Form
 
         // Controls.Add(saveLoadResultLabel);
 
-        var someSplitter = new Splitter {
+        var someSplitter = new Splitter
+        {
             Dock = DockStyle.Bottom,
             BorderStyle = BorderStyle.FixedSingle,
             BackColor = Color.Red,
-            Location = new Point (0, 120),
-            Size = new Size (1, 8),
+            Location = new Point(0, 120),
+            Size = new Size(1, 8),
             TabIndex = 1,
             TabStop = false,
         };
@@ -193,7 +214,7 @@ public partial class MainForm : Form
 
         // Controls.Add(mainContainer);
 
-        Controls.AddRange(new Control[]{mainContainer, someSplitter, saveLoadResultLabel});
+        Controls.AddRange(new Control[] { mainContainer, someSplitter, saveLoadResultLabel });
 
         #endregion
 
@@ -330,7 +351,7 @@ public partial class MainForm : Form
         {
             Location = new Point(260, 0),
             Width = 140,
-            Height = 170,
+            Height = 220,
             Text = "Memory"
         };
 
@@ -343,17 +364,40 @@ public partial class MainForm : Form
         };
         memoryGroupBox.Controls.Add(memoryTypeDropDown);
 
-        memoryManufacturerDropDown = new ComboBox
-        {
-            Location = new Point(10, 55),
-            DataSource = Enum.GetValues<MemoryManufacturer>(),
+        // memoryManufacturerDropDown = new ComboBox
+        // {
+        //     Location = new Point(10, 55),
+        //     DataSource = Enum.GetValues<MemoryManufacturer>(),
+        // };
+        // memoryGroupBox.Controls.Add(memoryManufacturerDropDown);
+
+
+        radioButtons = new RadioButton[] {
+            new RadioButton {
+                Location = new Point(10, 55),
+                Text = "SKHynix",
+            },
+            new RadioButton {
+                Location = new Point(10, 80),
+                Text = "Micron",
+            },
+            new RadioButton {
+                Location = new Point(10, 105),
+                Text = "Samsung",
+            }
         };
-        memoryGroupBox.Controls.Add(memoryManufacturerDropDown);
+
+        foreach (var radioButton in radioButtons)
+            radioButton.CheckedChanged += RadioButton_CheckedChanged;
+
+        memoryGroupBox.Controls.AddRange(radioButtons);
+
+
 
 
         memorySizeLabel = new Label
         {
-            Location = new Point(10, 90),
+            Location = new Point(10, 140),
             // Text = "Size:",
             Width = 120,
         };
@@ -369,7 +413,7 @@ public partial class MainForm : Form
 
         memorySizeTrackBar = new TrackBar
         {
-            Location = new Point(10, 120),
+            Location = new Point(10, 170),
             Size = new Size(130, 45),
             Maximum = 16,
             Minimum = 1,
@@ -384,7 +428,7 @@ public partial class MainForm : Form
 
         productionCheckbox = new CheckBox
         {
-            Location = new Point(260, 175),
+            Location = new Point(260, 225),
             Text = "Is in active\r\nproduction",
             Height = 50,
         };
@@ -394,7 +438,7 @@ public partial class MainForm : Form
         var showButtonToolTip = new ToolTip();
         var showButton = new Button
         {
-            Location = new Point(260, 225),
+            Location = new Point(260, 275),
             Height = 35,
             Text = "show",
         };
@@ -403,6 +447,38 @@ public partial class MainForm : Form
         mainContainer.Controls.Add(showButton);
 
         mainContainer.Controls.Add(memoryGroupBox);
+
+
+        var timerLabel = new Label {
+            Location = new Point(260, 350),
+            Width = 130,
+            Height = 30,
+            Text = "timer text"
+        };
+        mainContainer.Controls.Add(timerLabel);
+
+        var timer = new System.Windows.Forms.Timer {
+            Interval = 300,
+        };
+
+        timer.Tick += (sender, e) => {
+            timerTicks++;
+            timerLabel.Text = $"{timerTicks} ticks";
+        };
+
+        var timerButton = new Button {
+            Location = new Point(260, 320),
+            Width = 130,
+            Height = 30,
+            Text = "Start/stop timer",
+        };
+        timerButton.Click += (sender, e) => {
+            timer.Enabled = !timer.Enabled;
+        };
+        mainContainer.Controls.Add(timerButton);
+
+
+
         #endregion
 
         ResetDataBindings();
@@ -463,7 +539,8 @@ public partial class MainForm : Form
 
     void ListView_MouseClick(object? sender, MouseEventArgs e)
     {
-        if (e.Button == MouseButtons.Right) {
+        if (e.Button == MouseButtons.Right)
+        {
             var item = modelData.AddNew();
             listView.Items.Add(item.Model);
         }
@@ -485,11 +562,28 @@ public partial class MainForm : Form
         memorySizeLabel.Text = $"Size: {memorySizeTrackBar.Value} GB";
     }
 
-    void ModelTextBox_TextChanged(object? sender, EventArgs e) {
+    void ModelTextBox_TextChanged(object? sender, EventArgs e)
+    {
         if (listView.SelectedItems.Count != 0)
             listView.SelectedItems[0].Text = modelTextBox.Text;
         else
             Console.WriteLine("WARNING: editing an item without a set index!");
+    }
+
+    void RadioButton_CheckedChanged(object? sender, EventArgs e)
+    {
+        MemoryManufacturer[] values = {
+            MemoryManufacturer.SKHynix,
+            MemoryManufacturer.Micron,
+            MemoryManufacturer.Samsung
+        };
+
+        for (int i = 0; i < radioButtons.Length; i++)
+            if (radioButtons[i].Checked)
+            {
+                memoryManufacturer = values[i];
+                return;
+            }
     }
 
     void SaveGPU()
@@ -517,7 +611,7 @@ public partial class MainForm : Form
             listView.Items.Add(newGPU.Model);
 
             gpuList.SelectedIndex = gpuList.Items.Count - 1;
-            
+
             selectedGpu = modelData.Last();
             ResetDataBindings();
             saveLoadResultLabel.Text = $"Successfully loaded {saveLoadTextBox.Text}";
@@ -581,11 +675,19 @@ public partial class MainForm : Form
             nameof(this.memoryType)
         );
 
-        memoryManufacturerDropDown.ResetBind(
-            nameof(ComboBox.SelectedItem),
-            this,
-            nameof(this.memoryManufacturer)
-        );
+        for (int i = 0; i < memValues.Length; i++)
+            if (selectedGpu.Memory.manufacturer == memValues[i])
+            {
+                radioButtons[i].Checked = true;
+                break;
+            }
+
+
+        // memoryManufacturerDropDown.ResetBind(
+        //     nameof(ComboBox.SelectedItem),
+        //     this,
+        //     nameof(this.memoryManufacturer)
+        // );
 
         // memorySizeNumericUpDown.ResetBind(
         //     nameof(NumericUpDown.Value),
