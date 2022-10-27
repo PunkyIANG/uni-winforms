@@ -6,7 +6,6 @@ using System.Text.Json;
 namespace GPUProject.lab1v2;
 
 
-// TODO: add, delete, save, load
 public partial class MainForm : Form
 {
     ListView listView;
@@ -99,6 +98,8 @@ public partial class MainForm : Form
     public MainForm()
     {
         InitializeComponent();
+
+        Text = "GPU App";
 
         var mainContainer = new Panel
         {
@@ -201,12 +202,9 @@ public partial class MainForm : Form
         var someSplitter = new Splitter
         {
             Dock = DockStyle.Bottom,
-            BorderStyle = BorderStyle.FixedSingle,
             BackColor = Color.Red,
             Location = new Point(0, 120),
             Size = new Size(1, 8),
-            TabIndex = 1,
-            TabStop = false,
         };
 
 
@@ -461,9 +459,20 @@ public partial class MainForm : Form
             Interval = 300,
         };
 
+        var progressBar = new ProgressBar {
+            Location = new Point(260, 380),
+            Width = 120,
+            Height = 30,
+            Maximum = 100,
+        };
+        mainContainer.Controls.Add(progressBar);
+
+
         timer.Tick += (sender, e) => {
             timerTicks++;
+            timerTicks %= progressBar.Maximum + 1;
             timerLabel.Text = $"{timerTicks} ticks";
+            progressBar.Value = timerTicks;
         };
 
         var timerButton = new Button {
@@ -476,6 +485,8 @@ public partial class MainForm : Form
             timer.Enabled = !timer.Enabled;
         };
         mainContainer.Controls.Add(timerButton);
+
+
 
 
 
