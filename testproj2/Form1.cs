@@ -1,98 +1,150 @@
 // ReSharper disable IdentifierTypo
+
+using System.Drawing.Text;
+using Timer = System.Windows.Forms.Timer;
 namespace testproj2;
 
 public partial class Form1 : Form
 {
     public Form1()
     {
-        // Make the Form an MDI parent.
-        // IsMdiContainer = true;
+        
+        InitializeComponent();
 
-        // Create ToolStripPanel controls.
-        var tspTop = new ToolStripPanel();
-        var tspBottom = new ToolStripPanel();
-        var tspLeft = new ToolStripPanel();
-        var tspRight = new ToolStripPanel();
+        #region ImageList
 
-        // Dock the ToolStripPanel controls to the edges of the form.
-        tspTop.Dock = DockStyle.Top;
-        tspBottom.Dock = DockStyle.Bottom;
-        tspLeft.Dock = DockStyle.Left;
-        tspRight.Dock = DockStyle.Right;
+        var imageList = new ImageList
+        {
+            ImageSize = new Size(16, 16),
+            ColorDepth = ColorDepth.Depth32Bit,
+        };
 
-        // Create ToolStrip controls to move among the 
-        // ToolStripPanel controls.
+        foreach (var path in Directory.GetFiles("../../../img/")) 
+            imageList.Images.Add(Image.FromFile(path));
 
-        // Create the "Top" ToolStrip control and add
-        // to the corresponding ToolStripPanel.
-        var tsTop = new ToolStrip();
-        tsTop.Items.Add("Top");
-        tspTop.Join(tsTop);
+        #endregion
 
-        // Create the "Bottom" ToolStrip control and add
-        // to the corresponding ToolStripPanel.
-        var tsBottom = new ToolStrip();
-        tsBottom.Items.Add("Bottom");
-        tspBottom.Join(tsBottom);
+        #region ToolStrip
 
-        // Create the "Right" ToolStrip control and add
-        // to the corresponding ToolStripPanel.
-        var tsRight = new ToolStrip();
-        tsRight.Items.Add("Right");
-        tspRight.Join(tsRight);
+        var toolStripContainer = new ToolStripContainer { Dock = DockStyle.Fill };
 
-        // Create the "Left" ToolStrip control and add
-        // to the corresponding ToolStripPanel.
-        var tsLeft = new ToolStrip();
-        tsLeft.Items.Add("Left");
-        tspLeft.Join(tsLeft);
+        var toolStrip = new ToolStrip();
+        toolStrip.Items.Add(new ToolStripButton
+        {
+            Text = "One",
+            TextDirection = ToolStripTextDirection.Vertical270,
+        });
+        toolStrip.Items.Add(new ToolStripButton
+        {
+            Text = "Two",
+            TextDirection = ToolStripTextDirection.Vertical270,
+        });
+        
+        
 
-        // Create a MenuStrip control with a new window.
-        var ms = new MenuStrip();
-        var windowMenu = new ToolStripMenuItem("Window");
-        var windowNewMenu = new ToolStripMenuItem("New", null, windowNewMenu_Click);
-        windowMenu.DropDownItems.Add(windowNewMenu);
-        ((ToolStripDropDownMenu)(windowMenu.DropDown)).ShowImageMargin = false;
-        ((ToolStripDropDownMenu)(windowMenu.DropDown)).ShowCheckMargin = true;
+        toolStripContainer.LeftToolStripPanel.Controls.Add(toolStrip);
+        Controls.Add(toolStripContainer);
+        #endregion
 
-        // Assign the ToolStripMenuItem that displays 
-        // the list of child forms.
-        ms.MdiWindowListItem = windowMenu;
+        #region StatusStrip
+        
+        var statusStrip = new StatusStrip
+        {
+            Text = "statusStrip1",
+            Dock = DockStyle.Bottom,
+        };
 
-        // Add the window ToolStripMenuItem to the MenuStrip.
-        ms.Items.Add(windowMenu);
+        var toolStripStatusLabel = new ToolStripStatusLabel("Ready");
+        var emptyLabel = new ToolStripStatusLabel { Spring = true };
+        var timeLabel = new ToolStripStatusLabel(DateTime.Now.ToString("HH:mm:ss"));
 
-        // Dock the MenuStrip to the top of the form.
-        ms.Dock = DockStyle.Top;
+        statusStrip.Items.Add(toolStripStatusLabel);
+        statusStrip.Items.Add(emptyLabel);
+        statusStrip.Items.Add(timeLabel);
 
-        // The Form.MainMenuStrip property determines the merge target.
-        MainMenuStrip = ms;
+        var timer = new Timer
+        {
+            Interval = 1000,
+            Enabled = true,
+        };
+        timer.Tick += (_, _) => { timeLabel.Text = DateTime.Now.ToString("HH:mm:ss"); };
+        
+        Controls.Add(statusStrip);
+        #endregion
+        
+        #region MenuStrip
 
-        // Add the ToolStripPanels to the form in reverse order.
-        Controls.Add(tspRight);
-        Controls.Add(tspLeft);
-        Controls.Add(tspBottom);
-        Controls.Add(tspTop);
+        var menuStrip = new MenuStrip
+        {
+            Text = "menuStrip1",
+            Dock = DockStyle.Top,
+        };
 
-        // Add the MenuStrip last.
-        // This is important for correct placement in the z-order.
-        Controls.Add(ms);
+        var fileToolStripMenuItem = new ToolStripMenuItem("&File");
+        var editToolStripMenuItem = new ToolStripMenuItem("&Edit");
+
+        #region FileToolStripMenuItem
+
+        var newToolStripMenuItem = new ToolStripMenuItem
+        {
+            Text = "New",
+            ShortcutKeys = Keys.Control | Keys.N,
+            ShowShortcutKeys = true,
+            Image = imageList.Images[1],
+        };
+
+        var openToolStripMenuItem = new ToolStripMenuItem
+        {
+            Text = "Open",
+            ShortcutKeys = Keys.Control | Keys.O,
+            ShowShortcutKeys = true,
+            // Image = imageList.Images[0],
+        };
+        
+        var saveToolStripMenuItem = new ToolStripMenuItem
+        {
+            Text = "Save",
+            ShortcutKeys = Keys.Control | Keys.S,
+            ShowShortcutKeys = true,
+            Image = imageList.Images[0],
+        };
+
+        fileToolStripMenuItem.DropDownItems.Add(newToolStripMenuItem);
+        // fileToolStripMenuItem.DropDownItems.Add("-");
+        fileToolStripMenuItem.DropDownItems.Add(openToolStripMenuItem);
+        fileToolStripMenuItem.DropDownItems.Add(saveToolStripMenuItem);
+
+        #endregion
+
+        #region EditToolStripMenuItem
+
+        var undoToolStripMenuItem = new ToolStripMenuItem
+        {
+            Text = "Undo",
+            ShortcutKeys = Keys.Control | Keys.Z,
+            ShowShortcutKeys = true,
+        };
+
+        var redoToolStripMenuItem = new ToolStripMenuItem
+        {
+            Text = "Redo",
+            ShortcutKeys = Keys.Control | Keys.Y,
+            ShowShortcutKeys = true,
+        };
+
+        editToolStripMenuItem.DropDownItems.Add(undoToolStripMenuItem);
+        editToolStripMenuItem.DropDownItems.Add(redoToolStripMenuItem);
+        // editToolStripMenuItem.DropDownItems.Add("-");
+
+        #endregion
+
+        menuStrip.Items.Add(fileToolStripMenuItem);
+        menuStrip.Items.Add(editToolStripMenuItem);
+
+        MainMenuStrip = menuStrip;
+        Controls.Add(menuStrip);
+
+        #endregion
+
     }
-
-    // This event handler is invoked when 
-    // the "New" ToolStripMenuItem is clicked.
-    // It creates a new Form and sets its MdiParent 
-    // property to the main form.
-    private void windowNewMenu_Click(object? sender, EventArgs e)
-    {
-        // var f = new Form();
-        // // f.MdiParent = this;
-        // f.Text = "Form - " + MdiChildren.Length;
-        // Controls.Add(f);
-        // f.Show();
-        var panel = new Panel();
-        panel.Controls.Add(new Label{Text = "Label " + MdiChildren.Length});
-        Controls.Add(panel);
-    }
-
 }

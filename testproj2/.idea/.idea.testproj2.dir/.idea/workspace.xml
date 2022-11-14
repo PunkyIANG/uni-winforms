@@ -12,7 +12,10 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1f9f4df1c25bbabd5d1e997df5eca749dcdcc7331e7c45eadda749f604bd6/Form.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/356b1ff75d66bb1b767d9c6c3d14dfd83ac877b0c8ecebc8adfab44b30ae1315/ToolStripButton.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4a113043e0eb372cb45426136e3f219582dbd468acbe6d8143dfcf94f31cd4e/ToolStripItem.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c88d3da0241236e28e91bf94e758b232aed3537e/ApplicationConfiguration.g.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/df484e784747623a93a1735e18f88d1ab5f573101f62bf1c7a5f5345a2d7e/FileSystemEnumerator.Windows.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec259aff64d8e2ff5d9dbb2dac94718ee3865e4c967e3fd6189c708f359c9791/Control.ControlCollection.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -23,16 +26,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "XThreadsFramesViewSplitterKey": "0.49906892",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.49906892&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="testproj2" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -63,7 +67,14 @@
       <updated>1667551678478</updated>
       <workItem from="1667551681340" duration="617000" />
       <workItem from="1667552318344" duration="91000" />
-      <workItem from="1667552418358" duration="2570000" />
+      <workItem from="1667552418358" duration="3910000" />
+      <workItem from="1667975343303" duration="1037000" />
+      <workItem from="1668152464813" duration="619000" />
+      <workItem from="1668153156736" duration="7021000" />
+      <workItem from="1668162580973" duration="5794000" />
+      <workItem from="1668236332682" duration="2928000" />
+      <workItem from="1668405254392" duration="23000" />
+      <workItem from="1668405364457" duration="11000" />
     </task>
     <servers />
   </component>
