@@ -146,5 +146,16 @@ public partial class Form1 : Form
 
         #endregion
 
+        #region ContextMenuStrip
+
+        var contextMenuStrip = new ContextMenuStrip();
+        
+        contextMenuStrip.Items.Add(newToolStripMenuItem);
+        contextMenuStrip.Items.Add(openToolStripMenuItem);
+        contextMenuStrip.Items.Add(saveToolStripMenuItem);
+        
+        ContextMenuStrip = contextMenuStrip;
+
+        #endregion
     }
 }

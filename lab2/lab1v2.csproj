@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>lab2</AssemblyName>
+    <RootNamespace>lab2</RootNamespace>
   </PropertyGroup>
 
 </Project>

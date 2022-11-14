@@ -571,63 +571,39 @@ public partial class MainForm : Form
         var fileToolStripMenuItem = new ToolStripMenuItem("&File");
         // var editToolStripMenuItem = new ToolStripMenuItem("&Edit");
 
-        #region FileToolStripMenuItem
-
-        var newToolStripMenuItem = new ToolStripMenuItem
         {
-            Text = "New",
-            ShortcutKeys = Keys.Control | Keys.N,
-            ShowShortcutKeys = true,
-            Image = imageList.Images[1],
-        };
-        newToolStripMenuItem.Click += (_, _) => { AddGpu(); };
+            var newToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "New",
+                ShortcutKeys = Keys.Control | Keys.N,
+                ShowShortcutKeys = true,
+                Image = imageList.Images[1],
+            };
+            newToolStripMenuItem.Click += (_, _) => { AddGpu(); };
 
-        var openToolStripMenuItem = new ToolStripMenuItem
-        {
-            Text = "Open",
-            ShortcutKeys = Keys.Control | Keys.O,
-            ShowShortcutKeys = true,
-            // Image = imageList.Images[0],
-        };
-        openToolStripMenuItem.Click += (_, _) => { OpenWithModal(); };
+            var openToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "Open",
+                ShortcutKeys = Keys.Control | Keys.O,
+                ShowShortcutKeys = true,
+                // Image = imageList.Images[0],
+            };
+            openToolStripMenuItem.Click += (_, _) => { OpenWithModal(); };
 
-        var saveToolStripMenuItem = new ToolStripMenuItem
-        {
-            Text = "Save",
-            ShortcutKeys = Keys.Control | Keys.S,
-            ShowShortcutKeys = true,
-            Image = imageList.Images[0],
-        };
-        saveToolStripMenuItem.Click += (_, _) => { SaveWithModal(); };
+            var saveToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "Save",
+                ShortcutKeys = Keys.Control | Keys.S,
+                ShowShortcutKeys = true,
+                Image = imageList.Images[0],
+            };
+            saveToolStripMenuItem.Click += (_, _) => { SaveWithModal(); };
 
-        fileToolStripMenuItem.DropDownItems.Add(newToolStripMenuItem);
-        // fileToolStripMenuItem.DropDownItems.Add("-");
-        fileToolStripMenuItem.DropDownItems.Add(openToolStripMenuItem);
-        fileToolStripMenuItem.DropDownItems.Add(saveToolStripMenuItem);
-
-        #endregion
-
-        // #region EditToolStripMenuItem
-        //
-        // var undoToolStripMenuItem = new ToolStripMenuItem
-        // {
-        //     Text = "Undo",
-        //     ShortcutKeys = Keys.Control | Keys.Z,
-        //     ShowShortcutKeys = true,
-        // };
-        //
-        // var redoToolStripMenuItem = new ToolStripMenuItem
-        // {
-        //     Text = "Redo",
-        //     ShortcutKeys = Keys.Control | Keys.Y,
-        //     ShowShortcutKeys = true,
-        // };
-        //
-        // editToolStripMenuItem.DropDownItems.Add(undoToolStripMenuItem);
-        // editToolStripMenuItem.DropDownItems.Add(redoToolStripMenuItem);
-        // // editToolStripMenuItem.DropDownItems.Add("-");
-        //
-        // #endregion
+            fileToolStripMenuItem.DropDownItems.Add(newToolStripMenuItem);
+            // fileToolStripMenuItem.DropDownItems.Add("-");
+            fileToolStripMenuItem.DropDownItems.Add(openToolStripMenuItem);
+            fileToolStripMenuItem.DropDownItems.Add(saveToolStripMenuItem);
+        }
 
         menuStrip.Items.Add(fileToolStripMenuItem);
         // menuStrip.Items.Add(editToolStripMenuItem);
@@ -637,6 +613,46 @@ public partial class MainForm : Form
 
         #endregion
 
+        #region ContextMenuStrip
+
+        var contextMenuStrip = new ContextMenuStrip();
+
+        {
+            var newToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "New",
+                ShortcutKeys = Keys.Control | Keys.N,
+                ShowShortcutKeys = true,
+                Image = imageList.Images[1],
+            };
+            newToolStripMenuItem.Click += (_, _) => { AddGpu(); };
+
+            var openToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "Open",
+                ShortcutKeys = Keys.Control | Keys.O,
+                ShowShortcutKeys = true,
+                // Image = imageList.Images[0],
+            };
+            openToolStripMenuItem.Click += (_, _) => { OpenWithModal(); };
+
+            var saveToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "Save",
+                ShortcutKeys = Keys.Control | Keys.S,
+                ShowShortcutKeys = true,
+                Image = imageList.Images[0],
+            };
+            saveToolStripMenuItem.Click += (_, _) => { SaveWithModal(); };
+
+
+            contextMenuStrip.Items.Add(newToolStripMenuItem);
+            contextMenuStrip.Items.Add(openToolStripMenuItem);
+            contextMenuStrip.Items.Add(saveToolStripMenuItem);
+        }        
+        ContextMenuStrip = contextMenuStrip;
+
+        #endregion
 
         ResetDataBindings();
     }
