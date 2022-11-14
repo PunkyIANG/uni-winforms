@@ -11,7 +11,6 @@ public partial class MainForm : Form
     ListView listView;
     ListBox gpuList;
     TextBox saveLoadTextBox;
-    Label saveLoadResultLabel;
 
     ComboBox manufacturerDropDown;
     TextBox modelTextBox;
@@ -29,6 +28,8 @@ public partial class MainForm : Form
     Label memorySizeLabel;
     TrackBar memorySizeTrackBar;
     CheckBox productionCheckbox;
+
+    ToolStripStatusLabel toolStripStatusLabel;
 
     BindingList<GraphicsCard> modelData;
     GraphicsCard selectedGpu;
@@ -189,29 +190,7 @@ public partial class MainForm : Form
 
         mainContainer.Controls.Add(loadButton);
 
-        saveLoadResultLabel = new Label
-        {
-            // Location = new Point(0, 390),
-            // Width = 400,
-            Dock = DockStyle.Bottom,
-        };
-
-        // Controls.Add(saveLoadResultLabel);
-
-        var someSplitter = new Splitter
-        {
-            Dock = DockStyle.Bottom,
-            BackColor = Color.Red,
-            Location = new Point(0, 120),
-            Size = new Size(1, 8),
-        };
-
-
-        // Controls.Add(someSplitter);
-
-        // Controls.Add(mainContainer);
-
-        Controls.AddRange(new Control[] { mainContainer, someSplitter, saveLoadResultLabel });
+        Controls.Add(mainContainer);
 
         #endregion
 
@@ -521,22 +500,33 @@ public partial class MainForm : Form
         var toolStripContainer = new ToolStripContainer { Dock = DockStyle.Fill };
 
         var toolStrip = new ToolStrip();
-        toolStrip.Items.Add(new ToolStripButton
+        
+        var newToolStripButton = new ToolStripButton
         {
             Text = "New",
             TextDirection = ToolStripTextDirection.Vertical90,
-        });
-        toolStrip.Items.Add(new ToolStripButton
+        };
+        newToolStripButton.Click += (_, _) => { AddGpu(); };
+        
+        var openToolStripButton = new ToolStripButton
         {
             Text = "Open",
             TextDirection = ToolStripTextDirection.Vertical90,
-        });
-        toolStrip.Items.Add(new ToolStripButton
+        };
+        openToolStripButton.Click += (_, _) => { OpenWithModal(); };
+        
+        var saveToolStripButton = new ToolStripButton
         {
             Text = "Save",
             TextDirection = ToolStripTextDirection.Vertical90,
-        });
-
+        };
+        saveToolStripButton.Click += (_, _) => { SaveWithModal(); };
+        
+        
+        toolStrip.Items.Add(newToolStripButton);
+        toolStrip.Items.Add(openToolStripButton);
+        toolStrip.Items.Add(saveToolStripButton);
+        
 
         toolStripContainer.RightToolStripPanel.Controls.Add(toolStrip);
         mainContainer.Controls.Add(toolStripContainer);
@@ -551,7 +541,7 @@ public partial class MainForm : Form
             Dock = DockStyle.Bottom,
         };
 
-        var toolStripStatusLabel = new ToolStripStatusLabel("Ready");
+        toolStripStatusLabel = new ToolStripStatusLabel("Ready");
         var emptyLabel = new ToolStripStatusLabel { Spring = true };
         var timeLabel = new ToolStripStatusLabel(DateTime.Now.ToString("HH:mm:ss"));
 
@@ -590,7 +580,7 @@ public partial class MainForm : Form
             ShowShortcutKeys = true,
             Image = imageList.Images[1],
         };
-        newToolStripMenuItem.Click += (_, _) => { AddGPU(); };
+        newToolStripMenuItem.Click += (_, _) => { AddGpu(); };
 
         var openToolStripMenuItem = new ToolStripMenuItem
         {
@@ -665,7 +655,7 @@ public partial class MainForm : Form
 
     void GPUList_MouseClick(object? sender, MouseEventArgs e)
     {
-        if (e.Button == MouseButtons.Right) AddGPU();
+        if (e.Button == MouseButtons.Right) AddGpu();
     }
 
     void GPUList_SelectedValueChanged(object? sender, EventArgs e)
@@ -705,10 +695,10 @@ public partial class MainForm : Form
 
     void ListView_MouseClick(object? sender, MouseEventArgs e)
     {
-        if (e.Button == MouseButtons.Right) AddGPU();
+        if (e.Button == MouseButtons.Right) AddGpu();
     }
 
-    void AddGPU()
+    void AddGpu()
     {
         var item = modelData.AddNew();
         listView.Items.Add(item.Model);
@@ -787,7 +777,7 @@ public partial class MainForm : Form
                 : $"{selectedGpu.Model}.json";
 
         GraphicsCard.WriteGPU(filename, selectedGpu);
-        saveLoadResultLabel.Text = $"Saved to {filename}";
+        toolStripStatusLabel.Text = $"Saved to {filename}";
     }
 
     void LoadGpu(string filename = "")
@@ -796,7 +786,7 @@ public partial class MainForm : Form
             filename = saveLoadTextBox.Text;
         
         if (filename == string.Empty)
-            saveLoadResultLabel.Text = "Specify a filename first!";
+            toolStripStatusLabel.Text = "Specify a filename first!";
 
         if (GraphicsCard.TryReadGPU(filename, out var newGpu))
         {
@@ -807,11 +797,11 @@ public partial class MainForm : Form
 
             selectedGpu = modelData.Last();
             ResetDataBindings();
-            saveLoadResultLabel.Text = $"Successfully loaded {filename}";
+            toolStripStatusLabel.Text = $"Successfully loaded {filename}";
         }
         else
         {
-            saveLoadResultLabel.Text = "Load failed, probably missing file";
+            toolStripStatusLabel.Text = "Load failed, probably missing file";
         }
     }
 
