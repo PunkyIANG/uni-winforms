@@ -98,7 +98,7 @@ public partial class MainForm : Form
         InitializeComponent();
         Height = 600;
 
-        Text = "GPU App v2";
+        Text = "GPU App v2.1";
 
         var mainContainer = new Panel
         {
@@ -499,7 +499,7 @@ public partial class MainForm : Form
 
         var toolStripContainer = new ToolStripContainer { Dock = DockStyle.Fill };
 
-        var toolStrip = new ToolStrip();
+        var toolStrip = new ToolStrip();    
         
         var newToolStripButton = new ToolStripButton
         {
@@ -569,15 +569,17 @@ public partial class MainForm : Form
         };
 
         var fileToolStripMenuItem = new ToolStripMenuItem("&File");
-        // var editToolStripMenuItem = new ToolStripMenuItem("&Edit");
+        var viewToolStripMenuItem = new ToolStripMenuItem("&View");
+        var helpToolStripMenuItem = new ToolStripMenuItem("&Help");
 
         {
+            #region fileToolStrip 
+            
             var newToolStripMenuItem = new ToolStripMenuItem
             {
                 Text = "New",
                 ShortcutKeys = Keys.Control | Keys.N,
-                ShowShortcutKeys = true,
-                Image = imageList.Images[1],
+                Image = imageList.Images[2],
             };
             newToolStripMenuItem.Click += (_, _) => { AddGpu(); };
 
@@ -585,8 +587,6 @@ public partial class MainForm : Form
             {
                 Text = "Open",
                 ShortcutKeys = Keys.Control | Keys.O,
-                ShowShortcutKeys = true,
-                // Image = imageList.Images[0],
             };
             openToolStripMenuItem.Click += (_, _) => { OpenWithModal(); };
 
@@ -594,8 +594,7 @@ public partial class MainForm : Form
             {
                 Text = "Save",
                 ShortcutKeys = Keys.Control | Keys.S,
-                ShowShortcutKeys = true,
-                Image = imageList.Images[0],
+                Image = imageList.Images[1],
             };
             saveToolStripMenuItem.Click += (_, _) => { SaveWithModal(); };
 
@@ -603,10 +602,66 @@ public partial class MainForm : Form
             // fileToolStripMenuItem.DropDownItems.Add("-");
             fileToolStripMenuItem.DropDownItems.Add(openToolStripMenuItem);
             fileToolStripMenuItem.DropDownItems.Add(saveToolStripMenuItem);
+            
+            #endregion
+
+            #region viewToolStrip
+
+            var statusBarToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "Status Bar",
+                Image = imageList.Images[0],
+            };
+            statusBarToolStripMenuItem.Click += (_, _) =>
+            {
+                statusStrip.Visible = !statusStrip.Visible;
+                statusBarToolStripMenuItem.Image =
+                    statusBarToolStripMenuItem.Image == null
+                        ? imageList.Images[0]
+                        : null;
+            };
+            
+            var toolBarToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "Tool Bar",
+                Image = imageList.Images[0],
+            };
+            toolBarToolStripMenuItem.Click += (_, _) =>
+            {
+                toolStrip.Visible = !toolStrip.Visible;
+                toolBarToolStripMenuItem.Image =
+                    toolBarToolStripMenuItem.Image == null
+                        ? imageList.Images[0]
+                        : null;
+            };
+
+            viewToolStripMenuItem.DropDownItems.Add(statusBarToolStripMenuItem);
+            viewToolStripMenuItem.DropDownItems.Add(toolBarToolStripMenuItem);
+            
+            #endregion
+
+            #region helpToolStrip
+
+            var aboutToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "About",
+                ShortcutKeys = Keys.Control | Keys.A
+            };
+            aboutToolStripMenuItem.Click += (_, _) =>
+            {
+                MessageBox.Show(@"GPU editor program
+Created by Turcanu Cristian
+Version v2.1",
+                    "About GPU App");
+            };
+            helpToolStripMenuItem.DropDownItems.Add(aboutToolStripMenuItem);
+
+            #endregion
         }
 
         menuStrip.Items.Add(fileToolStripMenuItem);
-        // menuStrip.Items.Add(editToolStripMenuItem);
+        menuStrip.Items.Add(viewToolStripMenuItem);
+        menuStrip.Items.Add(helpToolStripMenuItem);
 
         MainMenuStrip = menuStrip;
         Controls.Add(menuStrip);
@@ -623,7 +678,7 @@ public partial class MainForm : Form
                 Text = "New",
                 ShortcutKeys = Keys.Control | Keys.N,
                 ShowShortcutKeys = true,
-                Image = imageList.Images[1],
+                Image = imageList.Images[2],
             };
             newToolStripMenuItem.Click += (_, _) => { AddGpu(); };
 
@@ -641,7 +696,7 @@ public partial class MainForm : Form
                 Text = "Save",
                 ShortcutKeys = Keys.Control | Keys.S,
                 ShowShortcutKeys = true,
-                Image = imageList.Images[0],
+                Image = imageList.Images[1],
             };
             saveToolStripMenuItem.Click += (_, _) => { SaveWithModal(); };
 
