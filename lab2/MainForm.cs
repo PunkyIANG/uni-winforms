@@ -490,7 +490,7 @@ public partial class MainForm : Form
             ColorDepth = ColorDepth.Depth32Bit,
         };
 
-        foreach (var path in Directory.GetFiles("../../../img/"))
+        foreach (var path in Directory.GetFiles("img/"))
             imageList.Images.Add(Image.FromFile(path));
 
         #endregion
