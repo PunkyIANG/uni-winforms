@@ -10,6 +10,7 @@ namespace GPUProject.lab1v2;
 
 public partial class MainForm : Form
 {
+    private readonly ToolStripStatusLabel _toolStripStatusLabel;
     public MainForm()
     {
         InitializeComponent();
@@ -27,6 +28,55 @@ public partial class MainForm : Form
 
         foreach (var path in Directory.GetFiles("img/"))
             imageList.Images.Add(Image.FromFile(path));
+
+        #endregion
+        
+        #region ToolStrip
+
+        // var toolStripContainer = new ToolStripContainer() /* { Dock = DockStyle.Fill }*/;
+
+        var toolStripPanelLeft = new ToolStripPanel { Dock = DockStyle.Left };
+        var toolStripPanelRight = new ToolStripPanel { Dock = DockStyle.Right };
+        var toolStripPanelTop = new ToolStripPanel { Dock = DockStyle.Top };
+        var toolStripPanelBottom = new ToolStripPanel { Dock = DockStyle.Bottom };
+
+        var toolStrip = new ToolStrip();    
+        
+        var newToolStripButton = new ToolStripButton
+        {
+            Text = "New",
+            TextDirection = ToolStripTextDirection.Vertical90,
+        };
+        newToolStripButton.Click += (_, _) => LoadMdiChild();
+        
+        var openToolStripButton = new ToolStripButton
+        {
+            Text = "Open",
+            TextDirection = ToolStripTextDirection.Vertical90,
+        };
+        openToolStripButton.Click += (_, _) => OpenWithModal(); 
+        
+        var saveToolStripButton = new ToolStripButton
+        {
+            Text = "Save",
+            TextDirection = ToolStripTextDirection.Vertical90,
+        };
+        saveToolStripButton.Click += (_, _) => SaveWithModal();
+        
+        
+        toolStrip.Items.Add(newToolStripButton);
+        toolStrip.Items.Add(openToolStripButton);
+        toolStrip.Items.Add(saveToolStripButton);
+        
+        
+        // toolStripContainer.RightToolStripPanel.Controls.Add(toolStrip);
+        toolStripPanelRight.Join(toolStrip);
+        // Controls.Add(toolStripContainer);
+        
+        Controls.Add(toolStripPanelLeft);
+        Controls.Add(toolStripPanelRight);
+        Controls.Add(toolStripPanelTop);
+        Controls.Add(toolStripPanelBottom);
 
         #endregion
         
@@ -65,18 +115,14 @@ public partial class MainForm : Form
                 ShortcutKeys = Keys.Control | Keys.N,
                 Image = imageList.Images[2],
             };
-            newToolStripMenuItem.Click += (_, _) =>
-            {
-                var newMdiChild = new GpuForm();
-                newMdiChild.MdiParent = this;
-                newMdiChild.Show();
-            };
+            newToolStripMenuItem.Click += (_, _) => LoadMdiChild();
+
             var openToolStripMenuItem = new ToolStripMenuItem
             {
                 Text = "Open",
                 ShortcutKeys = Keys.Control | Keys.O,
             };
-            // openToolStripMenuItem.Click += (_, _) => OpenWithModal();
+            openToolStripMenuItem.Click += (_, _) => OpenWithModal();
 
             var saveToolStripMenuItem = new ToolStripMenuItem
             {
@@ -84,7 +130,7 @@ public partial class MainForm : Form
                 ShortcutKeys = Keys.Control | Keys.S,
                 Image = imageList.Images[1],
             };
-            // saveToolStripMenuItem.Click += (_, _) => SaveWithModal(); 
+            saveToolStripMenuItem.Click += (_, _) => SaveWithModal(); 
 
             var closeToolStripMenuItem = new ToolStripMenuItem
             {
@@ -164,5 +210,125 @@ Version v2.1",
 
         #endregion
 
+        #region StatusStrip
+
+        var statusStrip = new StatusStrip
+        {
+            Text = "statusStrip1",
+            Dock = DockStyle.Bottom,
+        };
+
+        _toolStripStatusLabel = new ToolStripStatusLabel("Ready");
+        var emptyLabel = new ToolStripStatusLabel { Spring = true };
+        var timeLabel = new ToolStripStatusLabel(DateTime.Now.ToString("HH:mm:ss"));
+
+        statusStrip.Items.Add(_toolStripStatusLabel);
+        statusStrip.Items.Add(emptyLabel);
+        statusStrip.Items.Add(timeLabel);
+
+        var timeTimer = new Timer
+        {
+            Interval = 1000,
+            Enabled = true,
+        };
+        timeTimer.Tick += (_, _) => timeLabel.Text = DateTime.Now.ToString("HH:mm:ss");
+
+        Controls.Add(statusStrip);
+
+        #endregion
+
+        #region ContextMenuStrip
+
+        var contextMenuStrip = new ContextMenuStrip();
+
+        {
+            var newToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "New",
+                ShortcutKeys = Keys.Control | Keys.N,
+                ShowShortcutKeys = true,
+                Image = imageList.Images[2],
+            };
+            newToolStripMenuItem.Click += (_, _) => LoadMdiChild();
+
+            var openToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "Open",
+                ShortcutKeys = Keys.Control | Keys.O,
+                ShowShortcutKeys = true,
+                // Image = imageList.Images[0],
+            };
+            openToolStripMenuItem.Click += (_, _) => OpenWithModal();
+
+            var saveToolStripMenuItem = new ToolStripMenuItem
+            {
+                Text = "Save",
+                ShortcutKeys = Keys.Control | Keys.S,
+                ShowShortcutKeys = true,
+                Image = imageList.Images[1],
+            };
+            saveToolStripMenuItem.Click += (_, _) => SaveWithModal();
+
+
+            contextMenuStrip.Items.Add(newToolStripMenuItem);
+            contextMenuStrip.Items.Add(openToolStripMenuItem);
+            contextMenuStrip.Items.Add(saveToolStripMenuItem);
+        }        
+        ContextMenuStrip = contextMenuStrip;
+
+        #endregion
+
+    }
+
+    void LoadMdiChild(GraphicsCard? gpu = null)
+    {
+        var newMdiChild = new GpuForm(gpu);
+        newMdiChild.MdiParent = this;
+        newMdiChild.Show();
+    }
+    
+    void OpenWithModal()
+    {
+        var openFileDialog = new OpenFileDialog()
+        {
+            Filter = "Json files (*.json)|*.json|All files (*.*)|*.*",
+            Title = "Open GPU file",
+        };
+
+        if (openFileDialog.ShowDialog() == DialogResult.OK && openFileDialog.FileName != "")
+            // LoadGpu(openFileDialog.FileName);
+        {
+            if (GraphicsCard.TryReadGPU(openFileDialog.FileName, out var newGpu))
+            {
+                LoadMdiChild(newGpu);
+                _toolStripStatusLabel.Text = $"Successfully loaded {openFileDialog.FileName}";
+            }
+            else
+            {
+                _toolStripStatusLabel.Text = "Load failed, probably missing file";
+            }
+        }
+    }
+    
+    void SaveWithModal()
+    {
+        if (ActiveMdiChild is not GpuForm child)
+            return;
+        
+        var selectedGpu = child.CurrentGpu;
+        
+        var saveFileDialog = new SaveFileDialog
+        {
+            Filter = "Json files (*.json)|*.json|All files (*.*)|*.*",
+            Title = "Save GPU File",
+            FileName = selectedGpu.Model,
+        };
+
+        if (saveFileDialog.ShowDialog() == DialogResult.OK && saveFileDialog.FileName != "")
+        {
+            GraphicsCard.WriteGPU(saveFileDialog.FileName, selectedGpu);
+            _toolStripStatusLabel.Text = $"Saved to {saveFileDialog.FileName}";
+
+        }
     }
 }

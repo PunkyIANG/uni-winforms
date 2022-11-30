@@ -7,35 +7,74 @@ namespace lab2;
 
 public partial class GpuForm : Form
 {
-    private readonly GraphicsCard _currentGpu;
+    public readonly GraphicsCard? CurrentGpu;
 
     public MemoryManufacturer MemoryManufacturer
     {
-        get => _currentGpu.Memory.manufacturer;
+        get => CurrentGpu.Memory.manufacturer;
         set
         {
-            if (value != _currentGpu.Memory.manufacturer)
-                _currentGpu.Memory = _currentGpu.Memory with { manufacturer = value };
+            if (value != CurrentGpu.Memory.manufacturer)
+                CurrentGpu.Memory = CurrentGpu.Memory with { manufacturer = value };
+        }
+    }
+
+    public bool IsSkHynixManufacturer
+    {
+        get => CurrentGpu.Memory.manufacturer == MemoryManufacturer.SKHynix;
+        set
+        {
+            if (value)
+            {
+                CurrentGpu.Memory = CurrentGpu.Memory with { manufacturer = MemoryManufacturer.SKHynix };
+                Console.WriteLine($"SKHynix {value}");
+            }
+        }
+    }
+
+    public bool IsMicronManufacturer
+    {
+        get => CurrentGpu.Memory.manufacturer == MemoryManufacturer.Micron;
+        set
+        {
+            if (value)
+            {
+                CurrentGpu.Memory = CurrentGpu.Memory with { manufacturer = MemoryManufacturer.Micron };
+                Console.WriteLine($"Micron {value}");
+            }
+        }
+    }
+
+    public bool IsSamsungManufacturer
+    {
+        get => CurrentGpu.Memory.manufacturer == MemoryManufacturer.Samsung;
+        set
+        {
+            if (value)
+            {
+                CurrentGpu.Memory = CurrentGpu.Memory with { manufacturer = MemoryManufacturer.Samsung };
+                Console.WriteLine($"Samsung {value}");
+            }
         }
     }
 
     public MemoryType MemoryType
     {
-        get => _currentGpu.Memory.type;
+        get => CurrentGpu.Memory.type;
         set
         {
-            if (value != _currentGpu.Memory.type)
-                _currentGpu.Memory = _currentGpu.Memory with { type = value };
+            if (value != CurrentGpu.Memory.type)
+                CurrentGpu.Memory = CurrentGpu.Memory with { type = value };
         }
     }
 
     public byte MemorySize
     {
-        get => _currentGpu.Memory.size;
+        get => CurrentGpu.Memory.size;
         set
         {
-            if (value != _currentGpu.Memory.size)
-                _currentGpu.Memory = _currentGpu.Memory with { size = value };
+            if (value != CurrentGpu.Memory.size)
+                CurrentGpu.Memory = CurrentGpu.Memory with { size = value };
         }
     }
 
@@ -43,9 +82,11 @@ public partial class GpuForm : Form
     {
     }
 
-    public GpuForm(GraphicsCard inputGpu)
+    public GpuForm(GraphicsCard? inputGpu)
     {
-        _currentGpu = inputGpu;
+        inputGpu ??= new GraphicsCard();
+
+        CurrentGpu = inputGpu;
         InitializeComponent();
 
         AutoSize = true;
@@ -53,7 +94,7 @@ public partial class GpuForm : Form
         Size = new Size(543, 320);
         MaximumSize = new Size(543, 320);
 
-        this.SetBind(nameof(Text), _currentGpu, nameof(_currentGpu.Model));
+        this.SetBind(nameof(Text), CurrentGpu, nameof(CurrentGpu.Model));
 
         #region col1
 
@@ -72,7 +113,7 @@ public partial class GpuForm : Form
             DataSource = Enum.GetValues<Manufacturer>(),
         };
         manufacturerDropDown.SetBind(nameof(ComboBox.SelectedItem),
-            _currentGpu, nameof(_currentGpu.Manufacturer));
+            CurrentGpu, nameof(CurrentGpu.Manufacturer));
         col1.Controls.Add(manufacturerDropDown);
 
         var modelTextBox = new TextBox
@@ -82,7 +123,7 @@ public partial class GpuForm : Form
             Height = 40,
             PlaceholderText = "Model",
         };
-        modelTextBox.SetBind(nameof(modelTextBox.Text), _currentGpu, nameof(_currentGpu.Model));
+        modelTextBox.SetBind(nameof(modelTextBox.Text), CurrentGpu, nameof(CurrentGpu.Model));
 
         col1.Controls.Add(modelTextBox);
 
@@ -118,10 +159,10 @@ public partial class GpuForm : Form
             },
         };
 
-        outputButtons[0].Click += (_, _) => _currentGpu.OutputTypes.Add(OutputType.VGA);
-        outputButtons[1].Click += (_, _) => _currentGpu.OutputTypes.Add(OutputType.DVI);
-        outputButtons[2].Click += (_, _) => _currentGpu.OutputTypes.Add(OutputType.HDMI);
-        outputButtons[3].Click += (_, _) => _currentGpu.OutputTypes.Add(OutputType.DisplayPort);
+        outputButtons[0].Click += (_, _) => CurrentGpu.OutputTypes.Add(OutputType.VGA);
+        outputButtons[1].Click += (_, _) => CurrentGpu.OutputTypes.Add(OutputType.DVI);
+        outputButtons[2].Click += (_, _) => CurrentGpu.OutputTypes.Add(OutputType.HDMI);
+        outputButtons[3].Click += (_, _) => CurrentGpu.OutputTypes.Add(OutputType.DisplayPort);
 
         col1.Controls.AddRange(outputButtons);
 
@@ -131,13 +172,13 @@ public partial class GpuForm : Form
             Location = new Point(0, 160),
             Height = 110,
             Width = 160,
-            DataSource = _currentGpu.OutputTypes,
+            DataSource = CurrentGpu.OutputTypes,
         };
 
         outputList.MouseDoubleClick += (_, _) =>
         {
             if (outputList.SelectedIndex != ListBox.NoMatches)
-                _currentGpu.OutputTypes.RemoveAt(outputList.SelectedIndex);
+                CurrentGpu.OutputTypes.RemoveAt(outputList.SelectedIndex);
         };
 
         col1.Controls.Add(outputList);
@@ -179,11 +220,11 @@ public partial class GpuForm : Form
         };
 
         resolutionCheckBoxes[0].SetBind(nameof(CheckBox.Checked),
-            _currentGpu.RecommendedResolutions, nameof(_currentGpu.RecommendedResolutions.FullHD));
+            CurrentGpu.RecommendedResolutions, nameof(CurrentGpu.RecommendedResolutions.FullHD));
         resolutionCheckBoxes[1].SetBind(nameof(CheckBox.Checked),
-            _currentGpu.RecommendedResolutions, nameof(_currentGpu.RecommendedResolutions.TwoK));
+            CurrentGpu.RecommendedResolutions, nameof(CurrentGpu.RecommendedResolutions.TwoK));
         resolutionCheckBoxes[2].SetBind(nameof(CheckBox.Checked),
-            _currentGpu.RecommendedResolutions, nameof(_currentGpu.RecommendedResolutions.FourK));
+            CurrentGpu.RecommendedResolutions, nameof(CurrentGpu.RecommendedResolutions.FourK));
 
         col2.Controls.AddRange(resolutionCheckBoxes);
 
@@ -205,7 +246,7 @@ public partial class GpuForm : Form
         };
         col2.Controls.Add(priceNumericUpDown);
 
-        priceNumericUpDown.SetBind(nameof(NumericUpDown.Value), _currentGpu, nameof(_currentGpu.Price));
+        priceNumericUpDown.SetBind(nameof(NumericUpDown.Value), CurrentGpu, nameof(CurrentGpu.Price));
 
         var baseClockLabel = new Label
         {
@@ -225,7 +266,7 @@ public partial class GpuForm : Form
         };
         col2.Controls.Add(baseClockNumericUpDown);
 
-        baseClockNumericUpDown.SetBind(nameof(NumericUpDown.Value), _currentGpu, nameof(_currentGpu.BaseClock));
+        baseClockNumericUpDown.SetBind(nameof(NumericUpDown.Value), CurrentGpu, nameof(CurrentGpu.BaseClock));
 
         var productionCheckbox = new CheckBox
         {
@@ -236,7 +277,7 @@ public partial class GpuForm : Form
         };
         col2.Controls.Add(productionCheckbox);
 
-        productionCheckbox.SetBind(nameof(CheckBox.Checked), _currentGpu, nameof(_currentGpu.IsInActiveProduction));
+        productionCheckbox.SetBind(nameof(CheckBox.Checked), CurrentGpu, nameof(CurrentGpu.IsInActiveProduction));
 
         #endregion
 
@@ -247,7 +288,6 @@ public partial class GpuForm : Form
             Dock = DockStyle.Left,
             AutoSize = true,
             // Margin = new Padding(5)
-
         };
 
         var memoryTypeDropDown = new ComboBox
@@ -261,8 +301,6 @@ public partial class GpuForm : Form
             this, nameof(MemoryType));
         col3.Controls.Add(memoryTypeDropDown);
 
-        //TODO: bind this thing
-        //TODO: check binding on memory
         var radioButtons = new[]
         {
             new RadioButton
@@ -288,6 +326,10 @@ public partial class GpuForm : Form
             }
         };
 
+        radioButtons[0].SetBind(nameof(RadioButton.Checked), this, nameof(IsSkHynixManufacturer));
+        radioButtons[1].SetBind(nameof(RadioButton.Checked), this, nameof(IsMicronManufacturer));
+        radioButtons[2].SetBind(nameof(RadioButton.Checked), this, nameof(IsSamsungManufacturer));
+
         foreach (var radioButton in radioButtons)
             radioButton.CheckedChanged += (_, _) =>
             {
@@ -297,7 +339,7 @@ public partial class GpuForm : Form
                     MemoryManufacturer.Micron,
                     MemoryManufacturer.Samsung
                 };
-
+        
                 for (var i = 0; i < radioButtons.Length; i++)
                     if (radioButtons[i].Checked)
                     {
@@ -308,6 +350,8 @@ public partial class GpuForm : Form
 
         col3.Controls.AddRange(radioButtons);
 
+        //TODO: bind this to mem size
+        //so that it shows Size: 5 GB
         var memorySizeLabel = new Label
         {
             Location = new Point(0, 130),
@@ -338,7 +382,7 @@ public partial class GpuForm : Form
             Text = "show",
         };
         showButton.Click += (_, _) =>
-            MessageBox.Show(JsonSerializer.Serialize(_currentGpu));
+            MessageBox.Show(JsonSerializer.Serialize(CurrentGpu));
         col3.Controls.Add(showButton);
 
         #endregion

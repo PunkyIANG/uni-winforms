@@ -29,7 +29,7 @@ public class GraphicsCard
     public Manufacturer Manufacturer { get; set; }
     public string Model { get; set; }
     public BindingList<OutputType> OutputTypes { get; set; }
-    public ResolutionsRepresentation RecommendedResolutions { get; set; }
+    public ResolutionsRepresentation? RecommendedResolutions { get; set; }
     public decimal Price { get; set; }
     public uint BaseClock { get; set; }
     public Memory Memory { get; set; }
