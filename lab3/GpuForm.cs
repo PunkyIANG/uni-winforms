@@ -27,7 +27,7 @@ public partial class GpuForm : Form
             if (value)
             {
                 CurrentGpu.Memory = CurrentGpu.Memory with { manufacturer = MemoryManufacturer.SKHynix };
-                Console.WriteLine($"SKHynix {value}");
+                // Console.WriteLine($"SKHynix {value}");
             }
         }
     }
@@ -40,7 +40,7 @@ public partial class GpuForm : Form
             if (value)
             {
                 CurrentGpu.Memory = CurrentGpu.Memory with { manufacturer = MemoryManufacturer.Micron };
-                Console.WriteLine($"Micron {value}");
+                // Console.WriteLine($"Micron {value}");
             }
         }
     }
@@ -53,7 +53,7 @@ public partial class GpuForm : Form
             if (value)
             {
                 CurrentGpu.Memory = CurrentGpu.Memory with { manufacturer = MemoryManufacturer.Samsung };
-                Console.WriteLine($"Samsung {value}");
+                // Console.WriteLine($"Samsung {value}");
             }
         }
     }
@@ -74,9 +74,14 @@ public partial class GpuForm : Form
         set
         {
             if (value != CurrentGpu.Memory.size)
+            {
                 CurrentGpu.Memory = CurrentGpu.Memory with { size = value };
+                memorySizeLabel.Text = $"Size: {value} GB";
+            }
         }
     }
+
+    private Label memorySizeLabel;
 
     public GpuForm() : this(new GraphicsCard())
     {
@@ -352,10 +357,10 @@ public partial class GpuForm : Form
 
         //TODO: bind this to mem size
         //so that it shows Size: 5 GB
-        var memorySizeLabel = new Label
+        memorySizeLabel = new Label
         {
             Location = new Point(0, 130),
-            Text = "Size:",
+            Text = $"Size: {CurrentGpu.Memory.size} GB",
             Width = 120,
             Height = 30
         };
