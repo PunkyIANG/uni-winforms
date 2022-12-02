@@ -1,8 +1,4 @@
 using GPUProject.Resources;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
-using Accessibility;
 using lab2;
 using Timer = System.Windows.Forms.Timer;
 
@@ -11,6 +7,7 @@ namespace GPUProject.lab1v2;
 public partial class MainForm : Form
 {
     private readonly ToolStripStatusLabel _toolStripStatusLabel;
+    private StatusStrip statusStrip;
     public MainForm()
     {
         InitializeComponent();
@@ -139,7 +136,6 @@ public partial class MainForm : Form
             closeToolStripMenuItem.Click += (_, _) => Application.Exit();
 
             fileToolStripMenuItem.DropDownItems.Add(newToolStripMenuItem);
-            // fileToolStripMenuItem.DropDownItems.Add("-");
             fileToolStripMenuItem.DropDownItems.Add(openToolStripMenuItem);
             fileToolStripMenuItem.DropDownItems.Add(saveToolStripMenuItem);
             fileToolStripMenuItem.DropDownItems.Add(closeToolStripMenuItem);
@@ -153,32 +149,45 @@ public partial class MainForm : Form
                 Text = "Status Bar",
                 Image = imageList.Images[0],
             };
-            // statusBarToolStripMenuItem.Click += (_, _) =>
-            // {
-            //     statusStrip.Visible = !statusStrip.Visible;
-            //     statusBarToolStripMenuItem.Image =
-            //         statusBarToolStripMenuItem.Image == null
-            //             ? imageList.Images[0]
-            //             : null;
-            // };
+            statusBarToolStripMenuItem.Click += (_, _) =>
+            {
+                statusStrip.Visible = !statusStrip.Visible;
+                statusBarToolStripMenuItem.Image =
+                    statusBarToolStripMenuItem.Image == null
+                        ? imageList.Images[0]
+                        : null;
+            };
             
             var toolBarToolStripMenuItem = new ToolStripMenuItem
             {
                 Text = "Tool Bar",
                 Image = imageList.Images[0],
             };
-            // toolBarToolStripMenuItem.Click += (_, _) =>
-            // {
-            //     toolStrip.Visible = !toolStrip.Visible;
-            //     toolBarToolStripMenuItem.Image =
-            //         toolBarToolStripMenuItem.Image == null
-            //             ? imageList.Images[0]
-            //             : null;
-            // };
+            toolBarToolStripMenuItem.Click += (_, _) =>
+            {
+                toolStrip.Visible = !toolStrip.Visible;
+                toolBarToolStripMenuItem.Image =
+                    toolBarToolStripMenuItem.Image == null
+                        ? imageList.Images[0]
+                        : null;
+            };
 
+            var cascadeToolStripMenuItem = new ToolStripMenuItem("Cascade");
+            cascadeToolStripMenuItem.Click += (_,_) => LayoutMdi(MdiLayout.Cascade);
+            
+            var verticalTileToolStripMenuItem = new ToolStripMenuItem("Vertical Tile");
+            verticalTileToolStripMenuItem.Click += (_,_) => LayoutMdi(MdiLayout.TileVertical);
+            
+            var horizontalTileToolStripMenuItem = new ToolStripMenuItem("Horizontal Tile");
+            horizontalTileToolStripMenuItem.Click += (_,_) => LayoutMdi(MdiLayout.TileHorizontal);
+
+                
             viewToolStripMenuItem.DropDownItems.Add(statusBarToolStripMenuItem);
             viewToolStripMenuItem.DropDownItems.Add(toolBarToolStripMenuItem);
-            
+            viewToolStripMenuItem.DropDownItems.Add(cascadeToolStripMenuItem);
+            viewToolStripMenuItem.DropDownItems.Add(verticalTileToolStripMenuItem);
+            viewToolStripMenuItem.DropDownItems.Add(horizontalTileToolStripMenuItem);
+
             #endregion
 
             #region helpToolStrip
@@ -212,7 +221,7 @@ Version v2.1",
 
         #region StatusStrip
 
-        var statusStrip = new StatusStrip
+        statusStrip = new StatusStrip
         {
             Text = "statusStrip1",
             Dock = DockStyle.Bottom,
@@ -296,7 +305,6 @@ Version v2.1",
         };
 
         if (openFileDialog.ShowDialog() == DialogResult.OK && openFileDialog.FileName != "")
-            // LoadGpu(openFileDialog.FileName);
         {
             if (GraphicsCard.TryReadGPU(openFileDialog.FileName, out var newGpu))
             {

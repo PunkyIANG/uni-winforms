@@ -355,8 +355,6 @@ public partial class GpuForm : Form
 
         col3.Controls.AddRange(radioButtons);
 
-        //TODO: bind this to mem size
-        //so that it shows Size: 5 GB
         memorySizeLabel = new Label
         {
             Location = new Point(0, 130),
