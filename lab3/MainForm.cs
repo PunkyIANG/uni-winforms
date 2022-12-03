@@ -172,6 +172,13 @@ public partial class MainForm : Form
                         : null;
             };
 
+            viewToolStripMenuItem.DropDownItems.Add(statusBarToolStripMenuItem);
+            viewToolStripMenuItem.DropDownItems.Add(toolBarToolStripMenuItem);
+
+            #endregion
+
+            #region windowToolStrip
+
             var cascadeToolStripMenuItem = new ToolStripMenuItem("Cascade");
             cascadeToolStripMenuItem.Click += (_,_) => LayoutMdi(MdiLayout.Cascade);
             
@@ -180,14 +187,11 @@ public partial class MainForm : Form
             
             var horizontalTileToolStripMenuItem = new ToolStripMenuItem("Horizontal Tile");
             horizontalTileToolStripMenuItem.Click += (_,_) => LayoutMdi(MdiLayout.TileHorizontal);
-
-                
-            viewToolStripMenuItem.DropDownItems.Add(statusBarToolStripMenuItem);
-            viewToolStripMenuItem.DropDownItems.Add(toolBarToolStripMenuItem);
+            
             windowToolStripMenuItem.DropDownItems.Add(cascadeToolStripMenuItem);
             windowToolStripMenuItem.DropDownItems.Add(verticalTileToolStripMenuItem);
             windowToolStripMenuItem.DropDownItems.Add(horizontalTileToolStripMenuItem);
-
+            
             #endregion
 
             #region helpToolStrip
