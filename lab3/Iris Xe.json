@@ -1,1 +1,1 @@
-{"Manufacturer":0,"Model":"GT 1030","OutputTypes":[0],"RecommendedResolutions":{"FullHD":true,"TwoK":false,"FourK":false},"Price":220.7511500,"BaseClock":1664,"Memory":{"type":2,"manufacturer":2,"size":9},"IsInActiveProduction":false}
+{"Manufacturer":1,"Model":"RX 580","OutputTypes":[1,1],"RecommendedResolutions":{"FullHD":false,"TwoK":false,"FourK":false},"Price":0,"BaseClock":0,"Memory":{"type":0,"manufacturer":1,"size":1},"IsInActiveProduction":false}

@@ -94,10 +94,10 @@ public partial class GpuForm : Form
         CurrentGpu = inputGpu;
         InitializeComponent();
 
-        AutoSize = true;
+        // AutoSize = true;
         MinimumSize = new Size(543, 320);
         Size = new Size(543, 320);
-        MaximumSize = new Size(543, 320);
+        // MaximumSize = new Size(543, 320);
 
         this.SetBind(nameof(Text), CurrentGpu, nameof(CurrentGpu.Model));
 

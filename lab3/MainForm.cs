@@ -184,9 +184,9 @@ public partial class MainForm : Form
                 
             viewToolStripMenuItem.DropDownItems.Add(statusBarToolStripMenuItem);
             viewToolStripMenuItem.DropDownItems.Add(toolBarToolStripMenuItem);
-            viewToolStripMenuItem.DropDownItems.Add(cascadeToolStripMenuItem);
-            viewToolStripMenuItem.DropDownItems.Add(verticalTileToolStripMenuItem);
-            viewToolStripMenuItem.DropDownItems.Add(horizontalTileToolStripMenuItem);
+            windowToolStripMenuItem.DropDownItems.Add(cascadeToolStripMenuItem);
+            windowToolStripMenuItem.DropDownItems.Add(verticalTileToolStripMenuItem);
+            windowToolStripMenuItem.DropDownItems.Add(horizontalTileToolStripMenuItem);
 
             #endregion
 
